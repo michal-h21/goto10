@@ -1,0 +1,47 @@
+\ProvidesPackage{goto10}
+\RequirePackage{amssymb}
+
+
+\newcommand\leftsymbol{\ensuremath{\diagup}}%
+\newcommand\rightsymbol{\ensuremath{\diagdown}}%
+\renewcommand\leftsymbol{\texttt{\char9585}}%
+\renewcommand\rightsymbol{\texttt{\char9586}}%
+
+\newcount\goto@symcount%
+\newcount\goto@loopcount%
+
+\newcommand\GotoAddSymb[1]{%
+  \advance\goto@symcount by1\relax%
+  \@namedef{goto@sym\the\goto@symcount}{#1}}%
+
+\GotoAddSymb\leftsymbol
+\GotoAddSymb\rightsymbol
+%\GotoAddSymb{\phantom{\ensuremath{\diagdown}}}
+%\GotoAddSymb{\ensuremath{\vert}}
+
+
+\AtBeginDocument{%
+  \RequirePackage[first=1,last=\the\goto@symcount]{lcg}%
+}
+
+\newcommand\GotoUseSymb[1]{\@nameuse{goto@sym#1}}%
+
+\newcommand\gototen[1]{%
+  \bgroup%
+  \noindent%
+  \ifvmode\leavevmode\fi%
+  \goto@loopcount=1%
+  \loop%
+    \rand\GotoUseSymb{\arabic{rand}}\penalty0%\hspace{0pt}%\penalty0}
+    \advance\goto@loopcount by1\relax%
+  \ifnum\goto@loopcount<#1%
+  \repeat%
+  \egroup%
+}
+
+\newenvironment{goto}[1]{%
+  \noindent\gototen{#1}%
+}
+{}
+
+\endinput
